@@ -50,18 +50,14 @@ WebView webView;
 TextView t;
     private ProgressDialog pd;
 
-
-    /****YOUR LINKEDIN APP INFO HERE*********/
     private static final String API_KEY = "81xgphyq4pb5u4";
     private static final String SECRET_KEY = "Cpatq4GNeCWnrWbD";
-    //This is any string we want to use. This will be used for avoid CSRF attacks. You can generate one here: http://strongpasswordgenerator.com/
+   
     private static final String STATE = "F4WYDF2U5G1pO9x";
     private static final String REDIRECT_URI = "https://www.jaimahaprabhu.home.blog";
 
     private static final String SCOPES = "r_emailaddress";
-    /*********************************************/
 
-    //These are constants used for build the urls
     private static final String AUTHORIZATION_URL = "https://www.linkedin.com/uas/oauth2/authorization";
     private static final String ACCESS_TOKEN_URL = "https://www.linkedin.com/uas/oauth2/accessToken";
     private static final String SECRET_KEY_PARAM = "client_secret";
@@ -73,7 +69,7 @@ TextView t;
     private static final String SCOPE_PARAM = "scope";
     private static final String STATE_PARAM = "state";
     private static final String REDIRECT_URI_PARAM = "redirect_uri";
-    /*---------------------------------------*/
+
     private static final String QUESTION_MARK = "?";
     private static final String AMPERSAND = "&";
     private static final String EQUALS = "=";
@@ -113,28 +109,24 @@ TextView t;
         webView.setWebViewClient(new WebViewClient(){
             @Override
             public void onPageFinished(WebView view, String url) {
-                //This method will be executed each time a page finished loading.
-                //The only we do is dismiss the progressDialog, in case we are showing any.
+            
                 if(pd!=null && pd.isShowing()){
                     pd.dismiss();
                 }
             }
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String authorizationUrl) {
-                //This method will be called when the Auth proccess redirect to our RedirectUri.
-                //We will check the url looking for our RedirectUri.
+              
                 if(authorizationUrl.startsWith(REDIRECT_URI)){
                     Log.i("Authorize", "");
                     Uri uri = Uri.parse(authorizationUrl);
-                    //We take from the url the authorizationToken and the state token. We have to check that the state token returned by the Service is the same we sent.
-                    //If not, that means the request may be a result of CSRF and must be rejected.
+                  
                     String stateToken = uri.getQueryParameter(STATE_PARAM);
                     if(stateToken==null || !stateToken.equals(STATE)){
                         Log.e("Authorize", "State token doesn't match");
                         return true;
                     }
 
-                    //If the user doesn't allow authorization to our application, the authorizationToken Will be null.
                     String authorizationToken = uri.getQueryParameter(RESPONSE_TYPE_VALUE);
                     if(authorizationToken==null){
                         Log.i("Authorize", "The user doesn't allow authorization.");
@@ -142,13 +134,13 @@ TextView t;
                     }
                     Log.i("Authorize", "Auth token received: "+authorizationToken);
 
-                    //Generate URL for requesting Access Token
+           
                     String accessTokenUrl = getAccessTokenUrl(authorizationToken);
                     //We make the request in a AsyncTask
                     new PostRequestAsyncTask().execute(accessTokenUrl);
 
                 }else{
-                    //Default behaviour
+    
                     Log.i("Authorize","Redirecting to: "+authorizationUrl);
                     webView.loadUrl(authorizationUrl);
                 }
@@ -156,10 +148,9 @@ TextView t;
             }
         });
 
-        //Get the authorization Url
         String authUrl = getAuthorizationUrl();
         Log.i("Authorize","Loading Auth Url: "+authUrl);
-        //Load the authorization URL into the webView
+      
         webView.loadUrl(authUrl);
     }
 
@@ -184,10 +175,7 @@ TextView t;
         Log.i("accessToken URL",""+URL);
         return URL;
     }
-    /**
-     * Method that generates the url for get the authorization token from the Service
-     * @return Url
-     */
+    
     private static String getAuthorizationUrl(){
         String URL = AUTHORIZATION_URL
                 +QUESTION_MARK+RESPONSE_TYPE_PARAM+EQUALS+RESPONSE_TYPE_VALUE
@@ -230,12 +218,10 @@ TextView t;
                             if(expiresIn>0 && accessToken!=null){
                                 Log.i("Authorize", "This is the access Token: "+accessToken+". It will expires in "+expiresIn+" secs");
 
-                                //Calculate date of expiration
                                 Calendar calendar = Calendar.getInstance();
                                 calendar.add(Calendar.SECOND, expiresIn);
                                 long expireDate = calendar.getTimeInMillis();
 
-                                ////Store both expires in and access token in shared preferences
                                 SharedPreferences preferences = MainActivity.this.getSharedPreferences("user_info", 0);
                                 SharedPreferences.Editor editor = preferences.edit();
                                 editor.putLong("expires", expireDate);
@@ -264,7 +250,7 @@ TextView t;
                 pd.dismiss();
             }
             if(status){
-                //If everything went Ok, change to another activity.
+      
                 Intent startProfileActivity = new Intent(MainActivity.this,HomeActivity.class);
                 MainActivity.this.startActivity(startProfileActivity);
             }
