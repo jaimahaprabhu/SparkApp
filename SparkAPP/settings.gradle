@@ -1,0 +1,4 @@
+include ':app', ':linkedin-sdk', ':eventsapp', ':sampleapp'
+project(':linkedin-sdk').projectDir = new File('li-android-sdk-1.1.4-release/li-android-sdk/linkedin-sdk')
+project(':eventsapp').projectDir = new File('li-android-sdk-1.1.4-release/li-android-sdk/samples/eventsapp')
+project(':sampleapp').projectDir = new File('li-android-sdk-1.1.4-release/li-android-sdk/samples/sampleapp')
