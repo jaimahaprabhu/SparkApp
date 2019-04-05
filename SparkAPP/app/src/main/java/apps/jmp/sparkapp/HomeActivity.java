@@ -34,7 +34,7 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
         welcomeText = (TextView) findViewById(R.id.activity_profile_welcome_text);
 
-        //Request basic profile of the user
+ 
         SharedPreferences preferences = this.getSharedPreferences("user_info", 0);
         String accessToken = preferences.getString("accessToken", null);
         if (accessToken != null) {
